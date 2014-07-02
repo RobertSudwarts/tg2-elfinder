@@ -23,9 +23,24 @@ from akadime.controllers.sundry_functions import dump_args
 
 log = logging.getLogger(__name__)
 
+class EntityDocsController(TGController):
 
+    @expose('tgextelfinder.templates.vanilla')
+    def index(self, entity_id=None, optionset='default'):
+        ''' here you can do the stubs style substitution of the
+        template so that the local `master` template can be used
+        keeping the whole thing in context
+        '''
+        # and here you would set your `start_path` based on the entity's
+        # doc location
+        pass
 
 class RootController(TGController):
+    '''
+    The root controller should be reserved for generic methods....
+    '''
+
+    docs = EntityDocsController()
 
     # THIS controller is going to move to 'stubs' and
     # but it will still point at url="tgextelfinder/elfinder_controller",
@@ -223,8 +238,6 @@ class RootController(TGController):
             kw['optionset'] = self.optionset
         else:
             log.warn("optionset `%s` found in kw", kw['optionset'])
-
-
 
         if request.method == 'GET':
             log.debug("request.GET: %s", request.GET)
