@@ -1,0 +1,4 @@
+recursive-include tgextelfinder/public *
+recursive-include tgextelfinder/templates *.html
+global-exclude *.pyc
+
