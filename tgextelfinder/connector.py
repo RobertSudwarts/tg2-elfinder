@@ -17,12 +17,10 @@ def make_file(self, binary=None):
     http://stackoverflow.com/questions/394770/override-a-method-at-instance-level
     '''
 
-    return open(os.path.join('/tmp/elfinder_files', self.filename), 'wb')
+    #return open(os.path.join('/tmp/elfinder_files', self.filename), 'wb')
+    return open(os.path.join('/tmp', self.filename), 'wb')
 
 funcType = type(FieldStorage.make_file)
-##  Replace the make_file() function for each FieldStorage instance received
-## for fso in FILES:
-##   fso.make_file = funcType(make_file, fso, cgi.FieldStorage)
 
 
 class ElfinderConnector:

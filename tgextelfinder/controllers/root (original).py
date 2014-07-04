@@ -21,34 +21,32 @@ from ..utils import dump_args
 
 log = logging.getLogger(__name__)
 
-# class EntityDocsController(TGController):
+def where_am_i():
+    return "hello! I'm here!!"
 
-#     @expose('tgextelfinder.templates.vanilla')
-#     def index(self, entity_id=None, optionset='default'):
-#         ''' here you can do the stubs style substitution of the
-#         template so that the local `master` template can be used
-#         keeping the whole thing in context
-#         '''
-#         # and here you would set your `start_path` based on the entity's
-#         # doc location
-#         pass
+class EntityDocsController(TGController):
+
+    @expose('tgextelfinder.templates.vanilla')
+    def index(self, entity_id=None, optionset='default'):
+        ''' here you can do the stubs style substitution of the
+        template so that the local `master` template can be used
+        keeping the whole thing in context
+        '''
+        # and here you would set your `start_path` based on the entity's
+        # doc location
+        pass
 
 class RootController(TGController):
     '''
+    The root controller should be reserved for generic methods....
     '''
 
-    # def __init__(self, parent_template=None):
-    #     assert parent_template, "must be initialised with a parent template"
-    #     self.parent_template = parent_template
-
-
-    #docs = EntityDocsController()
+    docs = EntityDocsController()
 
     # THIS controller is going to move to 'stubs' and
     # but it will still point at url="tgextelfinder/elfinder_controller",
     @expose('tgextelfinder.templates.vanilla')
-    def index(self, entity_id=None, optionset='default', start_path='default',
-              alias="Documents", options=None):
+    def index(self, entity_id=None, optionset='default', start_path='default', alias="Elfinder Files", options=None):
         '''display elfinder widget
 
         :param optionset string: [default='default']

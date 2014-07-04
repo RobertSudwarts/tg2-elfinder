@@ -7,3 +7,4 @@ from markupsafe import Markup
 
 def bold(text):
     return Markup('<strong>%s</strong>' % text)
+

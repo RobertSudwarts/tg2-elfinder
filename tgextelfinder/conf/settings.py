@@ -1,5 +1,7 @@
 from os.path import join
 
+import tg
+
 from tgextelfinder.utils.accesscontrol import fs_standard_access
 from tgextelfinder.volumes.filesystem import ElfinderVolumeLocalFileSystem
 
@@ -27,13 +29,57 @@ class Settings(object):
     application's .ini (or some settings/conf file).
     **The default  path is going to differ for each plugged application**
     '''
-    MEDIA_ROOT = ''
-    MEDIA_URL = ''
+    MEDIA_ROOT = 'akadime/public/data'
+    MEDIA_URL = 'data'
 settings = Settings()
 
 CONNECTOR_OPTION_SETS_DEBUG = True
 
+# here's a thought... Do you want an item in
+# roots for every entity???
+# Probably not -- the cache would be a nightmare.
+
 ELFINDER_CONNECTOR_OPTION_SETS = {
+    # default used with our entity model
+    'entity': {
+        'debug' : CONNECTOR_OPTION_SETS_DEBUG,
+        'roots': [
+            {
+                'id': 'lffent',
+                'driver' : ElfinderVolumeLocalFileSystem,
+                'alias' : 'Documents',
+                # `path` and 'URL' are both used with
+                # os.path.join() to create the correct
+                # path for the entity's directory to be established
+                # as the 'root'
+                'path' : 'akadime/public/data',
+                'URL' : '/data/',
+                'uploadAllow' : ['all',],
+                'uploadDeny' : ['all',],
+                'uploadOrder' : ['deny', 'allow'],
+                'uploadMaxSize' : '128m',
+                'accessControl' : fs_standard_access,
+                'attributes' : [
+                    {
+                        'pattern' : r'\.tmb$',
+                        'read' : True,
+                        'write': True,
+                        'hidden' : True,
+                        'locked' : True
+                    },
+                    {
+                        'pattern' : r'\/photos$',
+                        'write' : False,
+                        'read' : False,
+                        'hidden' : False,
+                        'locked' : True
+                    },
+                ],
+                'archivers' : {},
+                'cache' : 60 * 5,  # seconds * minutes
+            }
+        ]
+    },
     #the default keywords demonstrates all possible configuration options
     #it allowes all file types, except from hidden files
     'default' : {
@@ -46,12 +92,13 @@ ELFINDER_CONNECTOR_OPTION_SETS = {
             {
                 'id' : 'lff',
                 'driver' : ElfinderVolumeLocalFileSystem,
-                'path' : join(settings.MEDIA_ROOT, 'akadime/public/elfinder_files'),
-                'alias' : 'Elfinder files',
+                #'path' : join(settings.MEDIA_ROOT, 'Teacher/399019d4-d025-4a06-b292-4c5a7e78c220'),
+                'path' : settings.MEDIA_ROOT, #join(settings.MEDIA_ROOT, 'Teacher/399019d4-d025-4a06-b292-4c5a7e78c220'),
+                'alias' : 'Documents',
                 #open this path on initial request instead of root path
                 #'startPath' : '',
+                'URL' : settings.MEDIA_URL,
                 #'URL' : '%s/test_plug/public/elfinder_files/' % settings.MEDIA_URL,
-                'URL' : 'elfinder_files/',
                 #the depth of sub-directory listings that should return per request
                 #'treeDeep' : 1,
                 #directory separator. required by client to show paths correctly
@@ -201,3 +248,13 @@ ELFINDER_CONNECTOR_OPTION_SETS = {
 # This is not needed unless you want to import an additional
 # optionset from elsewhere (ie another conf/settings file)
 #ELFINDER_CONNECTOR_OPTION_SETS.update(getattr(settings, 'ELFINDER_CONNECTOR_OPTION_SETS', {}))
+
+# or, you could get this by parsing a distinct conf file.
+# try:
+#     #var = tg.config.get('elfinder_optionset.default')
+#     #print var
+
+#     var = tg.config.items('elfinder_optionset')
+#     print var
+# except:
+#     print "You have a problem..."

@@ -106,21 +106,21 @@ class ElfinderField(TypeDecorator):
 
         super(ElfinderField, self).__init__(*args, **kw)
 
-        log.info("args: %s", args )
-        log.info("kw: %s", kw )
-        log.info("__init__ optionset: %s", optionset)
+        #log.info("args: %s", args )
+        #log.info("kw: %s", kw )
+        #log.info("__init__ optionset: %s", optionset)
 
         self.optionset = optionset
         self.start_path = start_path
 
-        log.info("__init__ self.optionset: %s", self.optionset)
+        #log.info("__init__ self.optionset: %s", self.optionset)
 
 
     def process_bind_param(self, value, dialect):
         # for some reason, even though self.optionset looks like
         # it's been filled with a value, it's missing when entered.
 
-        log.info("process_bind_param self.optionset: %s", self.optionset)
+        #log.info("process_bind_param self.optionset: %s", self.optionset)
 
         return value
 
@@ -172,3 +172,32 @@ class ProjectFile(DeclarativeBase):
     #pdf = Column(ElfinderField(optionset='pdf', blank=True, null=True,
     #                    help_text='This field uses the "pdf" custom optionset, ' \
     #                    'set in the project settings file'))
+
+
+# A one to one relationship to entity...
+# Or does this belong in Akadime itself??
+# No, it'd go here.
+# Or.... from tgextelfinder.xxx import ElfinderField ...
+# class NewPersonPhoto(DeclarativeBase):
+#     '''
+#     :param name string:
+#     :param content text:
+#     :param image ElfinderField:
+
+#     You may also want to consider adding a UUID with a
+#     many to one relationship to `Entity`.
+
+#     The proxy for this is found in yawd example_project/test+app/models.py
+#     (in other words, this)
+
+#     Question: why do we need 3 ElfinderFields ?
+#     '''
+#     __tablename__ = 'project_files'
+#     uuid = Column(types.Integer, primary_key=True)
+
+#     # once you have this custom field type working properly,
+#     # you should then be able to add the three fields below.
+#     myfield = Column(ElfinderField(length=100))
+
+#     image = Column(ElfinderField(optionset='image')
+
