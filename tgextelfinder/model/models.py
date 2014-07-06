@@ -83,7 +83,7 @@ class ElfinderFile(object):
 
 class ElfinderField(TypeDecorator):
     '''
-    Custom field type which returns an ElfinderFile object
+    Custom SQLAlchemy field type which returns an ElfinderFile object
 
     http://docs.sqlalchemy.org/en/rel_0_9/core/types.html#augmenting-existing-types
 
@@ -178,7 +178,7 @@ class ProjectFile(DeclarativeBase):
 # Or does this belong in Akadime itself??
 # No, it'd go here.
 # Or.... from tgextelfinder.xxx import ElfinderField ...
-# class NewPersonPhoto(DeclarativeBase):
+# class PersonIDImage(DeclarativeBase):
 #     '''
 #     :param name string:
 #     :param content text:
@@ -193,11 +193,12 @@ class ProjectFile(DeclarativeBase):
 #     Question: why do we need 3 ElfinderFields ?
 #     '''
 #     __tablename__ = 'project_files'
-#     uuid = Column(types.Integer, primary_key=True)
+#     id = Column(types.Integer, primary_key=True)
 
-#     # once you have this custom field type working properly,
-#     # you should then be able to add the three fields below.
-#     myfield = Column(ElfinderField(length=100))
+#     # will be a uuid
+#     person_id = Column(types.Integer, ForeignKey() )
 
-#     image = Column(ElfinderField(optionset='image')
+#     image = Column(ElfinderField(optionset='image'))
 
+#     # one to one relationship. but this has to *come* from somewhere..
+#     person = relationship(Person, backref=backref(use_list=False))
