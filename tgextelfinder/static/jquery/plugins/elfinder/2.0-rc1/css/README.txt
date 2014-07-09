@@ -3,7 +3,7 @@ Note:
 =======
 
 There are two immediate problems which are noticeable using the
-combination of  bootstrap, jquery ui and the elfinder widget (with its
+combination of bootstrap, jquery ui and the elfinder widget (with its
 own css)
 
     1. the button sizes (in fact the <divs> which contain the <spans>)
@@ -29,3 +29,5 @@ own css)
        [original] .elfinder-button form{position:absolute ...
        [amended]  .elfinder-button form{width:24px;position:absolute ...
 
+
+The position of the search box is also incorrect

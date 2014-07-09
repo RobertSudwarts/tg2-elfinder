@@ -832,103 +832,36 @@ class ElfinderVolumeDriver(object):
             pass
 
         kwargs = {}
+
+        # at this point, we should know from the mime-type,
+        # whether or not to bother trying to get height/width
+
         try:
-            im = Image.open(uploaded_file.temporary_file_path)
+            # The purpose here is simply to get the height & width
+            # of the image is the file is an image...
+            #
+            # `uploaded_file` doesn't have a temporary_file_path property
+            #fh = open ( uploaded_file.make_file()  )
+            fh = uploaded_file.make_file()
+            ff = fh.open()
+            im = Image.open( fh )
             (kwargs['w'], kwargs['h']) = im.size
-        except:
+            fh.close()
+            ## original lines
+            #im = Image.open( uploaded_file.temporary_file_path )
+            #(kwargs['w'], kwargs['h']) = im.size
+        except Exception, e:
+            self.logger.exception("%s: %s", Exception, e )
             pass #file is not an image
 
         self._clear_cached_dir(dst)
 
         try:
-            # you're getting an error here
             uploaded_path = self._save_uploaded(uploaded_file, dst, name, **kwargs)
         except:
             raise Exception(ElfinderErrorMessages.ERROR_UPLOAD_FILE_SIZE)
 
         return self.stat(uploaded_path)
-
-    # def upload(self, uploaded_file, hash_dst):
-    #     """
-    #     Save uploaded file.
-    #     On success return a list of file stat information.
-    #     If an already existing file was replaced, it will be added to the
-    #     removed file list and can be retrieved using the
-    #     :func:`elfinder.volumes.base.ElfinderVolumeDriver.remove`
-    #     method.
-    #     """
-
-    #     if self.command_disabled('upload'):
-    #         raise PermissionDeniedError
-
-    #     error_path = self.path(hash_dst)
-
-    #     try:
-    #         dir_ = self.dir(hash_dst)
-    #     except (FileNotFoundError, DirNotFoundError):
-    #         raise NamedError(ElfinderErrorMessages.ERROR_TRGDIR_NOT_FOUND, '#%s' % error_path)
-
-    #     if not dir_['write']:
-    #         raise PermissionDeniedError
-
-    #     if not self._name_accepted(uploaded_file.name):
-    #         raise Exception(ElfinderErrorMessages.ERROR_INVALID_NAME)
-
-    #     mime = uploaded_file.content_type
-
-    #     #logic based on http://httpd.apache.org/docs/2.2/mod/mod_authz_host.html#order
-    #     allow = self.mime_accepted(mime, self._options['uploadAllow'], None)
-    #     deny   = self.mime_accepted(mime, self._options['uploadDeny'], None)
-    #     if self._options['uploadOrder'][0].lower() == 'allow': #['allow', 'deny'], default is to 'deny'
-    #         upload = False #default is deny
-    #         if not deny and allow == True: #match only allow
-    #             upload = True
-    #         #else: (both match | no match | match only deny): deny
-    #     else: #['deny', 'allow'], default is to 'allow' - this is the default rule
-    #         upload = True #default is allow
-    #         if deny == True and not allow: #match only deny
-    #             upload = False
-    #         #else: (both match | no match | match only allow): allow }
-
-    #     if not upload:
-    #         raise Exception(ElfinderErrorMessages.ERROR_UPLOAD_FILE_MIME)
-
-    #     if self._options['uploadMaxSize'] > 0 and uploaded_file.size > self._options['uploadMaxSize']:
-    #         raise Exception(ElfinderErrorMessages.ERROR_UPLOAD_FILE_SIZE)
-
-    #     dst = self.decode(hash_dst)
-    #     name = uploaded_file.name
-    #     test = self._join_path(dst, name)
-
-    #     try:
-    #         file_ = self.stat(test)
-    #         #file exists
-    #         if self._options['uploadOverwrite']:
-    #             if not file_['write']:
-    #                 raise PermissionDeniedError
-    #             elif file_['mime'] == 'directory':
-    #                 raise NamedError(ElfinderErrorMessages.ERROR_NOT_REPLACE, uploaded_file.name)
-    #             self.remove(test)
-    #         else:
-    #             name = self._unique_name(dst, uploaded_file.name, '-', False)
-    #     except os.error: #file does not exist
-    #         pass
-
-    #     kwargs = {}
-    #     try:
-    #         im = Image.open(uploaded_file.temporary_file_path)
-    #         (kwargs['w'], kwargs['h']) = im.size
-    #     except:
-    #         pass #file is not an image
-
-    #     self._clear_cached_dir(dst)
-
-    #     try:
-    #         uploaded_path = self._save_uploaded(uploaded_file, dst, name, **kwargs)
-    #     except:
-    #         raise Exception(ElfinderErrorMessages.ERROR_UPLOAD_FILE_SIZE)
-
-    #     return self.stat(uploaded_path)
 
     def paste(self, volume, hash_src, dst, rm_src = False):
         """

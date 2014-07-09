@@ -343,19 +343,6 @@ class ElfinderVolumeLocalFileSystem(ElfinderVolumeDriver):
 
         return path
 
-    # def _save_uploaded(self, uploaded_file, dir_, name, **kwargs):
-    #     """
-    #     Save the django UploadedFile object and return its new path
-    #     """
-    #     path = self._join_path(dir_, name)
-    #     target = self._fopen(path, 'wb+')
-    #     for chunk in uploaded_file.chunks():
-    #         target.write(chunk)
-    #     target.close()
-    #     os.chmod(path, self._options['fileMode'])
-
-    #     return path
-
     def _get_contents(self, path):
         """
         Get file contents
