@@ -43,7 +43,26 @@ class IDImage(twc.Link, twf.InputField):
         self.attrs['src'] = self.src  # TBD: hack!
 
 
-class PersonIDImage(twc.Widget):
+
+NOIMAGE = "/tw2/resources/akadime/public/images/NoPicture.gif"
+IMAGE = "/data/Student/3a068b5b-573b-45f5-ad53-1d737a9615d2/id_image.jpg"
+
+
+# class PersonIDWidget(twf.ImageButton):
+#     modname = 'akadime'
+#     filename = '/public/images/NoPicture.gif'
+
+#     person = twc.Param('Person object', default=None)
+
+#     src = twc.Param("image source", default=NOIMAGE)
+
+#     def prepare(self):
+#         assert self.person, "A Person object is required"
+#         self.filename = IMAGE
+#         super(PersonIDWidget, self).prepare()
+
+
+class PersonIDWidget(twc.Widget):
     '''
     Widget showing a thumbnail image of a `Person`
 
@@ -56,15 +75,24 @@ class PersonIDImage(twc.Widget):
 
     person = twc.Param('Person object', default=None)
 
+    src = twc.Param("image source", default=NOIMAGE)
+    
     # a template is required here
     template = 'mako:tgextelfinder.templates.id_image'
 
     def prepare(self):
 
-        assert self.person, "A Person object is required"
+        # assert self.person, "A Person object is required"
+        # self.src =IMAGE
+        # if self.person.id_image:
+        #     # will return a `PersonIDImage` model object
+        #     # from which you can get the image.
+        #     # As the relationship is scalar, we can use this if/else
+        #     image = self.person.id_image.image
+        #     #self.src = <some image>
+            
+        # else:
+        #     # image not found, then set image to the placeholder
+        #     image = "some blank person image"
 
-        try:
-            image = self.person.id_image
-        except:
-            # image not found, then set image to the placeholder
-            image = "some blank person image"
+        super(PersonIDWidget, self).prepare()

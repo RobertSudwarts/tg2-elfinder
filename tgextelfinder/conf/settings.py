@@ -42,41 +42,41 @@ CONNECTOR_OPTION_SETS_DEBUG = True
 ELFINDER_CONNECTOR_OPTION_SETS = {
     # default used with our entity model
     'entity': {
-        'debug' : CONNECTOR_OPTION_SETS_DEBUG,
+        'debug': CONNECTOR_OPTION_SETS_DEBUG,
         'roots': [
             {
                 'id': 'lffent',
-                'driver' : ElfinderVolumeLocalFileSystem,
-                'alias' : 'Documents',
+                'driver': ElfinderVolumeLocalFileSystem,
+                'alias': 'Documents',
                 # `path` and 'URL' are both used with
                 # os.path.join() to create the correct
                 # path for the entity's directory to be established
                 # as the 'root'
-                'path' : 'akadime/public/data',
-                'URL' : '/data/',
-                'uploadAllow' : ['all',],
-                'uploadDeny' : ['all',],
-                'uploadOrder' : ['deny', 'allow'],
-                'uploadMaxSize' : '128m',
-                'accessControl' : fs_standard_access,
-                'attributes' : [
+                'path': 'akadime/public/data',
+                'URL': '/data/',
+                'uploadAllow': ['all', ],
+                'uploadDeny': ['all', ],
+                'uploadOrder': ['deny', 'allow'],
+                'uploadMaxSize': '128m',
+                'accessControl': fs_standard_access,
+                'attributes': [
                     {
-                        'pattern' : r'\.tmb$',
-                        'read' : True,
+                        'pattern': r'\.tmb$',
+                        'read': True,
                         'write': True,
-                        'hidden' : True,
-                        'locked' : True
+                        'hidden': True,
+                        'locked': True
                     },
                     {
-                        'pattern' : r'\/photos$',
-                        'write' : False,
-                        'read' : False,
-                        'hidden' : False,
-                        'locked' : True
+                        'pattern': r'\/photos$',
+                        'write': True,
+                        'read': True,
+                        'hidden': False,
+                        'locked': False
                     },
                 ],
-                'archivers' : {},
-                'cache' : 60 * 5,  # seconds * minutes
+                'archivers': {},
+                'cache': 60 * 5,  # seconds * minutes
             }
         ]
     },
@@ -91,13 +91,13 @@ ELFINDER_CONNECTOR_OPTION_SETS = {
             #},
             {
                 'id' : 'lff',
-                'driver' : ElfinderVolumeLocalFileSystem,
+                'driver': ElfinderVolumeLocalFileSystem,
                 #'path' : join(settings.MEDIA_ROOT, 'Teacher/399019d4-d025-4a06-b292-4c5a7e78c220'),
-                'path' : settings.MEDIA_ROOT, #join(settings.MEDIA_ROOT, 'Teacher/399019d4-d025-4a06-b292-4c5a7e78c220'),
-                'alias' : 'Documents',
+                'path': settings.MEDIA_ROOT, #join(settings.MEDIA_ROOT, 'Teacher/399019d4-d025-4a06-b292-4c5a7e78c220'),
+                'alias': 'Documents',
                 #open this path on initial request instead of root path
                 #'startPath' : '',
-                'URL' : settings.MEDIA_URL,
+                'URL': settings.MEDIA_URL,
                 #'URL' : '%s/test_plug/public/elfinder_files/' % settings.MEDIA_URL,
                 #the depth of sub-directory listings that should return per request
                 #'treeDeep' : 1,
@@ -122,13 +122,13 @@ ELFINDER_CONNECTOR_OPTION_SETS = {
                 #on upload -  if True - old file will be replaced with new one, if False new file get name - original_name-number.ext
                 #'uploadOverwrite' : True,
                 #mimetypes allowed to upload
-                'uploadAllow' : ['all',],
+                'uploadAllow': ['all',],
                 #mimetypes not allowed to upload
-                'uploadDeny' : ['all',],
+                'uploadDeny': ['all',],
                 #order to proccess uploadAllow and uploadDeny options
-                'uploadOrder' : ['deny', 'allow'],
+                'uploadOrder': ['deny', 'allow'],
                 #maximum upload file size. NOTE - this is size for every uploaded files
-                'uploadMaxSize' : '128m',
+                'uploadMaxSize': '128m',
                 #if True - every folder will be check for children folders, otherwise all folders will be marked as having subfolders
                 #'checkSubfolders' : True,
                 #allow to copy from this volume to other ones?
@@ -142,26 +142,26 @@ ELFINDER_CONNECTOR_OPTION_SETS = {
                 #'acceptedName' : r'.*',
                 #callable to control file permissions
                 #`fs_standard_access` hides all files starting with .
-                'accessControl' : fs_standard_access,
+                'accessControl': fs_standard_access,
                 #default permissions. not set hidden/locked here - take no effect
                 #'defaults' : {
                 #    'read' : True,
                 #    'write' : True
                 #},
-                'attributes' : [
+                'attributes': [
                     {
-                        'pattern' : r'\.tmb$',
-                        'read' : True,
+                        'pattern': r'\.tmb$',
+                        'read': True,
                         'write': True,
-                        'hidden' : True,
-                        'locked' : True
+                        'hidden': True,
+                        'locked': True
                     },
                     {
-                        'pattern' : r'\/photos$',
-                        'write' : False,
-                        'read' : False,
-                        'hidden' : False,
-                        'locked' : True
+                        'pattern': r'\/photos$',
+                        'write': True,
+                        'read': True,
+                        'hidden': False,
+                        'locked': False,
                     },
                     #{
                     #    'pattern' : r'\/my-inaccessible-folder$',
