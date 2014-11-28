@@ -6,3 +6,5 @@ syntax: glob
 *.ipynb
 
 cover/*
+build/*
+dist/*
