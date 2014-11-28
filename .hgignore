@@ -8,3 +8,4 @@ syntax: glob
 cover/*
 build/*
 dist/*
+tgext.elfinder.egg-info/*
