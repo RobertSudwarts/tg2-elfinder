@@ -1,6 +1,10 @@
-import os, re, time, urllib
+import os
+import re
+import time
+import urllib
 from tg.i18n import ugettext as _
-from exceptions import ElfinderErrorMessages, VolumeNotFoundError, DirNotFoundError, FileNotFoundError, NamedError, NotAnImageError
+from exceptions import ElfinderErrorMessages, VolumeNotFoundError, \
+    DirNotFoundError, FileNotFoundError, NamedError, NotAnImageError
 from utils.volumes import instantiate_driver
 
 from .utils import dump_args
@@ -16,7 +20,6 @@ def make_file(self, binary=None):
     http://stackoverflow.com/questions/562278/python-upload-where-are-tmp-files
     http://stackoverflow.com/questions/394770/override-a-method-at-instance-level
     '''
-
     #return open(os.path.join('/tmp/elfinder_files', self.filename), 'wb')
     return open(os.path.join('/tmp', self.filename), 'wb')
 
@@ -33,33 +36,38 @@ class ElfinderConnector:
     _commit = 'b0144a0'
     _netDrivers = {}
     _commands = {
-        'open' : { 'target' : False, 'tree' : False, 'init' : False, 'mimes' : False },
-        'ls' : { 'target' : True, 'mimes' : False },
-        'tree' : { 'target' : True },
-        'parents' : { 'target' : True },
-        'tmb' : { 'targets' : True },
-        'file' : { 'target' : True, 'download' : False, 'request' : False },
-        'size' : { 'targets' : True },
-        'mkdir' : { 'target' : True, 'name' : True },
-        'mkfile' : { 'target' : True, 'name' : True, 'mimes' : False },
-        'rm' : { 'targets' : True },
-        'rename' : { 'target' : True, 'name' : True, 'mimes' : False },
-        'duplicate' : { 'targets' : True },
-        'paste' : { 'dst' : True, 'targets' : True, 'cut' : False, 'mimes' : False },
-        'upload' : { 'target' : True, 'FILES' : True, 'mimes' : False, 'html' : False },
-        'get' : { 'target' : True },
-        'put' : { 'target' : True, 'content' : '', 'mimes' : False },
-        'archive' : { 'targets' : True, 'type_' : True, 'mimes' : False },
-        'extract' : { 'target' : True, 'mimes' : False },
-        'search' : { 'q' : True, 'mimes' : False },
-        'info' : { 'targets' : True, 'options': False },
-        'dim' : { 'target' : True },
-        'resize' : {'target' : True, 'width' : True, 'height' : True, 'mode' : False, 'x' : False, 'y' : False, 'degree' : False },
+        'open': {'target': False, 'tree': False, 'init': False,
+                 'mimes': False},
+        'ls': {'target': True, 'mimes': False},
+        'tree': {'target': True},
+        'parents': {'target': True},
+        'tmb': {'targets': True},
+        'file': {'target': True, 'download': False, 'request': False},
+        'size': {'targets': True},
+        'mkdir': {'target': True, 'name': True},
+        'mkfile': {'target': True, 'name': True, 'mimes': False},
+        'rm': {'targets': True},
+        'rename': {'target': True, 'name': True, 'mimes': False},
+        'duplicate': {'targets': True},
+        'paste': {'dst': True, 'targets': True, 'cut': False, 'mimes': False},
+        'upload': {'target': True, 'FILES': True, 'mimes': False,
+                   'html': False},
+        'get': {'target': True},
+        'put': {'target': True, 'content': '', 'mimes': False},
+        'archive': {'targets': True, 'type_': True, 'mimes': False},
+        'extract': {'target': True, 'mimes': False},
+        'search': {'q': True, 'mimes': False},
+        'info': {'targets': True, 'options': False},
+        'dim': {'target': True},
+        'resize': {'target': True, 'width': True, 'height': True,
+                   'mode': False, 'x': False, 'y': False, 'degree': False},
         #TODO: implement netmount
-        'netmount'  : { 'protocol' : True, 'host' : True, 'path' : False, 'port' : False, 'user' : True, 'pass' : True, 'alias' : False, 'options' : False}
+        'netmount': {'protocol': True, 'host': True, 'path': False,
+                     'port': False, 'user': True, 'pass': True,
+                     'alias': False, 'options': False}
     }
 
-    def __init__(self, opts, session = None):
+    def __init__(self, opts, session=None):
 
         if not 'roots' in opts:
             opts['roots'] = []
@@ -68,12 +76,12 @@ class ElfinderConnector:
         self._default = None
         self._loaded = False
         self._session = session
-        self._time =  time.time()
+        self._time = time.time()
         self._debug = 'debug' in opts and opts['debug']
         self._uploadDebug = ''
         self._mountErrors = []
 
-        #TODO: Use signals instead of the original connector's binding mechanism
+        #TODO: Use signals instead of original connector's binding mechanism
 
         #for root in self.getNetVolumes():
         #    opts['roots'].append(root)
@@ -101,15 +109,19 @@ class ElfinderConnector:
 
     def version(self, commit=False):
         """
-        Get api version. The commit number refers to the corresponding official elfinder github commit number.
+        Get api version. The commit number refers to the corresponding
+        official elfinder github commit number.
         """
-        return '%s - %s' % (self._version, self._commit) if commit else self._version
+        return '%s - %s' \
+            % (self._version, self._commit) if commit else self._version
 
     def commandExists(self, cmd):
         """
         Check if command exists
         """
-        return cmd in self._commands and hasattr(self, '_%s' % cmd) and callable(getattr(self, '_%s' % cmd))
+        return cmd in self._commands \
+            and hasattr(self, '_%s' % cmd) \
+            and callable(getattr(self, '_%s' % cmd))
 
     def commandArgsList(self, cmd):
         """
@@ -121,7 +133,8 @@ class ElfinderConnector:
     #    """
     #    Return  network volumes config.
     #    """
-    #    return self._session.get('elFinderNetVolumes', []) if  self._session else []
+    #    return self._session.get('elFinderNetVolumes', []) \
+    #        if  self._session else []
 
     #def setNetVolumes(self, volumes):
     #    """
@@ -141,7 +154,7 @@ class ElfinderConnector:
                 errors.append(msg)
 
         if not errors:
-            return [ElfinderErrorMessages.ERROR_UNKNOWN,]
+            return [ElfinderErrorMessages.ERROR_UNKNOWN, ]
         return errors
 
     def execute(self, cmd, **kwargs):
@@ -149,10 +162,10 @@ class ElfinderConnector:
         Exec command and return result
         """
         if not self._loaded:
-            return { 'error' : self.error(ElfinderErrorMessages.ERROR_CONF, ElfinderErrorMessages.ERROR_CONF_NO_VOL)}
+            return {'error' : self.error(ElfinderErrorMessages.ERROR_CONF, ElfinderErrorMessages.ERROR_CONF_NO_VOL)}
 
         if not self.commandExists(cmd):
-            return { 'error' : self.error(ElfinderErrorMessages.ERROR_UNKNOWN_CMD, cmd)}
+            return {'error' : self.error(ElfinderErrorMessages.ERROR_UNKNOWN_CMD, cmd)}
 
         #check all required arguments are provided
         for arg, req in self.commandArgsList(cmd).items():
@@ -289,9 +302,9 @@ class ElfinderConnector:
         method must be used.
         """
         try:
-            return { 'list' : self._volume(target).ls(target) }
+            return {'list' : self._volume(target).ls(target) }
         except:
-            return { 'error' : self.error(ElfinderErrorMessages.ERROR_OPEN, '#%s' % target) }
+            return {'error' : self.error(ElfinderErrorMessages.ERROR_OPEN, '#%s' % target) }
 
     def _tree(self, target):
         """
@@ -300,9 +313,9 @@ class ElfinderConnector:
         method must be used.
         """
         try:
-            return { 'tree' : self._volume(target).tree(target) }
+            return {'tree' : self._volume(target).tree(target) }
         except:
-            return { 'error' : self.error(ElfinderErrorMessages.ERROR_OPEN, '#%s' % target) }
+            return {'error' : self.error(ElfinderErrorMessages.ERROR_OPEN, '#%s' % target) }
 
     def _parents(self, target):
         """
@@ -313,7 +326,7 @@ class ElfinderConnector:
         try:
             return {'tree' : self._volume(target).parents(target) }
         except:
-            return { 'error' : self.error(ElfinderErrorMessages.ERROR_OPEN, u'#%s' % target) }
+            return {'error' : self.error(ElfinderErrorMessages.ERROR_OPEN, u'#%s' % target) }
 
     def _tmb(self, targets):
         """
@@ -321,7 +334,7 @@ class ElfinderConnector:
         directly, the :meth:`elfinder.connector.ElfinderConnector.execute`
         method must be used.
         """
-        result  = { 'images' : {} }
+        result  = {'images' : {} }
         for target in targets:
             try:
                 thumb = self._volume(target).tmb(target)
@@ -354,15 +367,15 @@ class ElfinderConnector:
             volume = self._volume(target)
             file_ = volume.file(target)
         except (VolumeNotFoundError, FileNotFoundError):
-            return { 'error' : _('File not found'), 'header' : { 'Status' : 404 }, 'raw' : True }
+            return {'error' : _('File not found'), 'header' : {'Status' : 404 }, 'raw' : True }
 
         if not file_['read']:
-            return { 'error' : _('Access denied'), 'header' : { 'Status' : 403 }, 'raw' : True }
+            return {'error' : _('Access denied'), 'header' : {'Status' : 403 }, 'raw' : True }
 
         try:
             fp = volume.open(target)
         except os.error: #Normally this could raise a FileNotFoundError as well, but we already checked this
-            return { 'error' : _('File not found'), 'header' : { 'Status' : 404 }, 'raw' : True }
+            return {'error' : _('File not found'), 'header' : {'Status' : 404 }, 'raw' : True }
 
         if download:
             disp = 'attachment'
@@ -416,14 +429,14 @@ class ElfinderConnector:
                 volume = self._volume(target)
                 file_ = volume.file(target)
             except (VolumeNotFoundError, FileNotFoundError):
-                file_ = { 'read' : 0 }
+                file_ = {'read' : 0 }
 
             if not file_['read']:
-                return { 'error' : self.error(ElfinderErrorMessages.ERROR_OPEN, u'#%s' % target) }
+                return {'error' : self.error(ElfinderErrorMessages.ERROR_OPEN, u'#%s' % target) }
 
             size += volume.size(target)
 
-        return { 'size' : size }
+        return {'size' : size }
 
     def _mkdir(self, target, name):
         """
@@ -434,14 +447,14 @@ class ElfinderConnector:
         try:
             volume = self._volume(target)
         except VolumeNotFoundError:
-            return { 'error' : self.error(ElfinderErrorMessages.ERROR_MKDIR, name, ElfinderErrorMessages.ERROR_TRGDIR_NOT_FOUND, '#%s' % target)}
+            return {'error' : self.error(ElfinderErrorMessages.ERROR_MKDIR, name, ElfinderErrorMessages.ERROR_TRGDIR_NOT_FOUND, '#%s' % target)}
 
         try:
-            return { 'added' : [volume.mkdir(target, name)] }
+            return {'added' : [volume.mkdir(target, name)] }
         except NamedError as e:
-            return { 'error' : self.error(e, e.name, ElfinderErrorMessages.ERROR_MKDIR) }
+            return {'error' : self.error(e, e.name, ElfinderErrorMessages.ERROR_MKDIR) }
         except Exception as e:
-            return { 'error': self.error(ElfinderErrorMessages.ERROR_MKDIR, name, e) }
+            return {'error': self.error(ElfinderErrorMessages.ERROR_MKDIR, name, e) }
 
     def _mkfile(self, target, name):
         """
@@ -452,14 +465,14 @@ class ElfinderConnector:
         try:
             volume = self._volume(target)
         except VolumeNotFoundError:
-            return { 'error' : self.error(ElfinderErrorMessages.ERROR_MKFILE, name, ElfinderErrorMessages.ERROR_TRGDIR_NOT_FOUND, '#%s' % target)}
+            return {'error' : self.error(ElfinderErrorMessages.ERROR_MKFILE, name, ElfinderErrorMessages.ERROR_TRGDIR_NOT_FOUND, '#%s' % target)}
 
         try:
-            return { 'added' : [volume.mkfile(target, name)] }
+            return {'added' : [volume.mkfile(target, name)] }
         except NamedError as e:
-            return { 'error' : self.error(e, e.name, ElfinderErrorMessages.ERROR_MKFILE, name ) }
+            return {'error' : self.error(e, e.name, ElfinderErrorMessages.ERROR_MKFILE, name ) }
         except Exception as e:
-            return { 'error': self.error(ElfinderErrorMessages.ERROR_MKFILE, name, e) }
+            return {'error': self.error(ElfinderErrorMessages.ERROR_MKFILE, name, e) }
 
     def _rename(self, target, name):
         """
@@ -470,16 +483,16 @@ class ElfinderConnector:
         try:
             volume = self._volume(target)
         except (VolumeNotFoundError):
-            return { 'error' : self.error(ElfinderErrorMessages.ERROR_RENAME, '#%s' % target, ElfinderErrorMessages.ERROR_FILE_NOT_FOUND) }
+            return {'error' : self.error(ElfinderErrorMessages.ERROR_RENAME, '#%s' % target, ElfinderErrorMessages.ERROR_FILE_NOT_FOUND) }
 
         try:
-            return { 'added' : [volume.rename(target, name)], 'removed' : volume.removed() }
+            return {'added' : [volume.rename(target, name)], 'removed' : volume.removed() }
         except NamedError as e:
-            return { 'error' : self.error(e, e.name, ElfinderErrorMessages.ERROR_RENAME) }
+            return {'error' : self.error(e, e.name, ElfinderErrorMessages.ERROR_RENAME) }
         except FileNotFoundError:
-            return { 'error' : self.error(ElfinderErrorMessages.ERROR_RENAME, '#%s' % target, ElfinderErrorMessages.ERROR_FILE_NOT_FOUND) }
+            return {'error' : self.error(ElfinderErrorMessages.ERROR_RENAME, '#%s' % target, ElfinderErrorMessages.ERROR_FILE_NOT_FOUND) }
         except Exception as e:
-            return { 'error' : self.error(ElfinderErrorMessages.ERROR_RENAME, e) }
+            return {'error' : self.error(ElfinderErrorMessages.ERROR_RENAME, e) }
 
     def _duplicate(self, targets, suffix='copy'):
         """
@@ -490,7 +503,7 @@ class ElfinderConnector:
         directly, the :meth:`elfinder.connector.ElfinderConnector.execute`
         method must be used.
         """
-        result = { 'added' : [] }
+        result = {'added' : [] }
 
         for target in targets:
             try:
@@ -556,8 +569,8 @@ class ElfinderConnector:
         if isinstance(html, basestring):
             html = int(html)
 
-        header = { 'Content-Type' : 'text/html; charset=utf-8' } if html else {}
-        result = { 'added' : [], 'header' : header }
+        header = {'Content-Type' : 'text/html; charset=utf-8' } if html else {}
+        result = {'added' : [], 'header' : header }
 
         files = []
         try:
@@ -569,35 +582,49 @@ class ElfinderConnector:
         except KeyError:
             files = []
 
-        print "+++ uploading files +++"
+        # print "+++ uploading files +++"
         for i, f in enumerate(files):
 
-            assert isinstance(f, FieldStorage), "this is not an Instance/FieldStorage type"
+            assert isinstance(f, FieldStorage), \
+                "this is not an Instance/FieldStorage type"
 
             q = f.make_file()
 
-            print "file #%d" % i
-            print "name: ", f.name
-            print "filename: ", f.filename
-            print "type: ", f.type
+            #print "file #%d" % i
+            #print "name: ", f.name
+            #print "filename: ", f.filename
+            #print "type: ", f.type
 
-            # headers doesn't tell you anythin
+            # headers doesn't tell you anything
             #print "headers: ", f.headers
 
-        print "+" * 10
+        #print "+" * 10
 
         if not isinstance(files, list) or not files:
-            return { 'error' : self.error(ElfinderErrorMessages.ERROR_UPLOAD, ElfinderErrorMessages.ERROR_UPLOAD_NO_FILES), 'header' : header }
+            return {
+                'header': header,
+                'error': self.error(
+                    ElfinderErrorMessages.ERROR_UPLOAD,
+                    ElfinderErrorMessages.ERROR_UPLOAD_NO_FILES
+                    ),
+                }
 
         try:
             volume = self._volume(target)
+
         except VolumeNotFoundError:
-            return { 'error' : self.error(ElfinderErrorMessages.ERROR_UPLOAD, ElfinderErrorMessages.ERROR_TRGDIR_NOT_FOUND, '#%s' % target), 'header' : header }
+            return {
+                'error' : self.error(
+                    ElfinderErrorMessages.ERROR_UPLOAD,
+                    ElfinderErrorMessages.ERROR_TRGDIR_NOT_FOUND, '#%s' % target),
+                'header': header
+                }
 
         for uploaded_file in files:
             try:
                 file_ = volume.upload(uploaded_file, target)
                 result['added'].append(file_)
+
             except Exception, e:
                 result['warning'] = self.error(ElfinderErrorMessages.ERROR_UPLOAD_FILE, uploaded_file.name, e)
                 self._uploadDebug = 'Upload error: Django handler error'
@@ -617,12 +644,12 @@ class ElfinderConnector:
             cut = int(cut)
 
         error = ElfinderErrorMessages.ERROR_MOVE if cut else ElfinderErrorMessages.ERROR_COPY
-        result = { 'added' : [], 'removed' : [] }
+        result = {'added' : [], 'removed' : [] }
 
         try:
             dstVolume = self._volume(dst)
         except VolumeNotFoundError:
-            return { 'error' : self.error(error, u'#%s' % targets[0], ElfinderErrorMessages.ERROR_TRGDIR_NOT_FOUND, u'#%s' % dst) }
+            return {'error' : self.error(error, u'#%s' % targets[0], ElfinderErrorMessages.ERROR_TRGDIR_NOT_FOUND, u'#%s' % dst) }
 
         for target in targets:
             try:
@@ -695,7 +722,7 @@ class ElfinderConnector:
             volume = self._volume(target)
             volume.file(target)
         except (VolumeNotFoundError, FileNotFoundError):
-            return { 'error' : self.error(ElfinderErrorMessages.ERROR_EXTRACT, u'#%s' % target, ElfinderErrorMessages.ERROR_FILE_NOT_FOUND) }
+            return {'error' : self.error(ElfinderErrorMessages.ERROR_EXTRACT, u'#%s' % target, ElfinderErrorMessages.ERROR_FILE_NOT_FOUND) }
 
         try:
             return {'added' : [volume.extract(target)] }
@@ -715,7 +742,7 @@ class ElfinderConnector:
         try:
             volume = self._volume(targets[0])
         except:
-            return { 'error' : self.error(ElfinderErrorMessages.ERROR_ARCHIVE, ElfinderErrorMessages.ERROR_TRGDIR_NOT_FOUND) }
+            return {'error' : self.error(ElfinderErrorMessages.ERROR_ARCHIVE, ElfinderErrorMessages.ERROR_TRGDIR_NOT_FOUND) }
 
         try:
             return {'added' : [volume.archive(targets, type_)]}
@@ -766,7 +793,7 @@ class ElfinderConnector:
         method must be used.
         """
         try:
-            return { 'dim' : self._volume(target).dimensions(target) }
+            return {'dim' : self._volume(target).dimensions(target) }
         except (VolumeNotFoundError, FileNotFoundError, NotAnImageError):
             return {}
 
@@ -783,10 +810,10 @@ class ElfinderConnector:
             volume = self._volume(target)
             volume.file(target)
         except (VolumeNotFoundError, FileNotFoundError):
-            return { 'error' : self.error(ElfinderErrorMessages.ERROR_RESIZE, '#%s' % target, ElfinderErrorMessages.ERROR_FILE_NOT_FOUND) }
+            return {'error' : self.error(ElfinderErrorMessages.ERROR_RESIZE, '#%s' % target, ElfinderErrorMessages.ERROR_FILE_NOT_FOUND) }
 
         try:
-            return { 'changed' : [volume.resize(target, width, height, x, y, mode, bg, degree)]}
+            return {'changed' : [volume.resize(target, width, height, x, y, mode, bg, degree)]}
         except Exception as e:
             return {'error' : self.error(ElfinderErrorMessages.ERROR_RESIZE, volume.path(target), e)}
 
